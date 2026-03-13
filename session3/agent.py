@@ -18,7 +18,9 @@ FEATURE_INDICES = [CLOUDS_IDX, HUMIDITY_IDX, RAIN_IDX, SNOW_IDX, TEMP_IDX, WIND_
 
 class Agent:
     def __init__(self):
-        self.model = joblib.load("model.pkl")
+        self.model_temperature = joblib.load("model_temperature.pkl")
+        self.model_wind_speed = joblib.load("model_wind_speed.pkl")
+        self.model_rain = joblib.load("model_rain.pkl")
 
     def predict(self, X_test):
         features = []
@@ -38,5 +40,7 @@ class Agent:
         features.extend([0, 0])
 
         X = np.array(features).reshape(1, -1)
-        prediction = self.model.predict(X)
-        return prediction.flatten()[:3]
+        temperature = self.model_temperature.predict(X)[0]
+        wind_speed = self.model_wind_speed.predict(X)[0]
+        rain = self.model_rain.predict(X)[0]
+        return np.array([temperature, wind_speed, rain])
